@@ -629,14 +629,29 @@
   .rank-row .rmeta .rscore{display:block; font-weight:700; font-size:0.92rem; color:var(--ink-text);}
 
   .error-row{
-    border-bottom:1px solid rgba(0,0,0,0.1);
-    padding:12px 4px;
+    position:relative;
+    border-radius:7px;
+    padding:12px 14px 12px 56px;
+    margin-bottom:8px;
     display:flex; justify-content:space-between; align-items:flex-start; gap:14px;
+    background:rgba(0,0,0,0.03);
+    transition:background .16s ease;
   }
+  .error-row:hover{background:rgba(199,154,61,0.09);}
   .error-row-main{flex:1; min-width:0;}
-  .error-row .qrow-topic{font-family:var(--mono); font-size:0.68rem; color:var(--stamp-red-dark); margin-bottom:3px;}
+  .error-row .qrow-topic{font-family:var(--mono); font-size:0.68rem; color:var(--stamp-red-dark); margin-bottom:3px; text-transform:uppercase; letter-spacing:0.03em;}
   .error-row .qrow-text{font-size:0.9rem; line-height:1.4;}
   .error-row-meta{flex:none; text-align:right; font-family:var(--mono); font-size:0.7rem; opacity:0.75;}
+  .error-row-num{
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    width:28px; height:28px; border-radius:50%;
+    background:rgba(44,107,73,0.16); color:var(--stamp-green-dark);
+    font-family:var(--mono); font-weight:700; font-size:0.74rem;
+    display:flex; align-items:center; justify-content:center;
+    flex:none;
+  }
+  .error-row-num.mid{background:rgba(199,154,61,0.22); color:#8a681f;}
+  .error-row-num.low{background:rgba(165,52,43,0.14); color:var(--stamp-red-dark);}
 
   /* ===== identificação (registro) ===== */
   .field{margin-bottom:18px;}
@@ -721,13 +736,27 @@
   }
   .teacher-stats div{
     position:relative;
-    background:linear-gradient(155deg, rgba(255,255,255,0.5), rgba(255,255,255,0.08));
+    background:linear-gradient(155deg, rgba(255,255,255,0.55), rgba(255,255,255,0.1));
     border:1px solid var(--paper-shadow);
-    border-radius:5px; padding:16px 14px; text-align:left;
+    border-radius:7px; padding:16px 14px; text-align:left;
     font-family:var(--mono);
     box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    overflow:hidden;
+    transition:transform .18s ease, box-shadow .18s ease;
   }
-  .teacher-stats .ic{position:absolute; top:12px; right:12px; font-size:1.1rem; opacity:0.55;}
+  .teacher-stats div::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, var(--gold), var(--stamp-red));
+    opacity:0.75;
+  }
+  .teacher-stats div:hover{transform:translateY(-2px); box-shadow:0 8px 16px rgba(0,0,0,0.14);}
+  .teacher-stats .ic{
+    position:absolute; top:10px; right:10px;
+    width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:0.95rem; background:rgba(0,0,0,0.06);
+  }
   .teacher-stats .num{display:block; font-size:1.55rem; font-weight:700; color:var(--stamp-red-dark); line-height:1.1;}
   .teacher-stats .lbl{font-size:0.68rem; opacity:0.75; display:block; margin-top:4px;}
   .teacher-toolbar{display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; align-items:center;}
@@ -757,6 +786,7 @@
     padding:11px 12px;
     white-space:nowrap;
   }
+  table.roster th.col-rank{width:38px; text-align:center;}
   table.roster tbody tr:nth-child(even) td{background:rgba(0,0,0,0.035);}
   table.roster td{
     padding:10px 12px; border-bottom:1px solid rgba(0,0,0,0.08);
@@ -764,6 +794,10 @@
   }
   table.roster tr:hover td{background:rgba(199,154,61,0.12) !important;}
   table.roster td.num{font-family:var(--mono); font-weight:700;}
+  table.roster td.col-rank{
+    text-align:center; font-family:var(--mono); font-size:0.72rem;
+    color:var(--stamp-red-dark); opacity:0.75; font-weight:700;
+  }
   .roster-empty{
     text-align:center; padding:34px 10px; opacity:0.7;
     font-family:var(--mono); font-size:0.85rem;
@@ -777,7 +811,8 @@
   .pill.mid{background:rgba(199,154,61,0.2); color:#8a681f;}
 
   .tabs-row{display:flex; gap:4px; margin-top:14px; flex-wrap:wrap; background:rgba(0,0,0,0.05); padding:4px; border-radius:6px;}
-  .tabs-row .tab-btn{opacity:0.6; background:transparent; box-shadow:none; color:var(--ink-text);}
+  .tabs-row .tab-btn{opacity:0.6; background:transparent; box-shadow:none; color:var(--ink-text); transition:opacity .15s ease, background .15s ease;}
+  .tabs-row .tab-btn:hover{opacity:0.85;}
   .tabs-row .tab-btn.active{opacity:1; background:linear-gradient(180deg, var(--ink-3), var(--ink-2)); color:var(--paper-text); box-shadow:0 4px 10px rgba(0,0,0,0.25);}
   .btn.gold-outline{
     background:transparent;
@@ -790,10 +825,11 @@
 
   .qform{
     background:rgba(0,0,0,0.05);
-    border:1px dashed var(--paper-shadow);
-    border-radius:4px;
+    border:1px solid var(--paper-shadow);
+    border-radius:7px;
     padding:18px;
     margin-bottom:20px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
   }
   .qform textarea{
     width:100%;
@@ -822,27 +858,50 @@
   }
 
   .qrow{
-    border-bottom:1px solid rgba(0,0,0,0.1);
-    padding:12px 4px;
+    position:relative;
+    border:1px solid transparent;
+    border-radius:7px;
+    padding:13px 14px 13px 56px;
+    margin-bottom:8px;
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
     gap:14px;
+    background:rgba(0,0,0,0.03);
+    transition:background .16s ease, border-color .16s ease, transform .16s ease;
+  }
+  .qrow:hover{
+    background:rgba(199,154,61,0.09);
+    border-color:var(--paper-shadow);
+    transform:translateX(2px);
+  }
+  .qrow-num{
+    position:absolute; left:14px; top:50%; transform:translateY(-50%);
+    width:28px; height:28px; border-radius:50%;
+    background:linear-gradient(180deg, var(--ink-3), var(--ink-2));
+    color:var(--gold-light);
+    font-family:var(--mono); font-weight:700; font-size:0.74rem;
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.3);
+    flex:none;
   }
   .qrow-main{flex:1; min-width:0;}
   .qrow-topic{
     font-family:var(--mono); font-size:0.68rem;
     color:var(--stamp-red-dark); margin-bottom:3px;
+    text-transform:uppercase; letter-spacing:0.03em;
   }
   .qrow-text{font-size:0.92rem; line-height:1.4;}
   .qrow-actions{display:flex; gap:6px; flex:none; flex-wrap:wrap;}
   .qrow-actions button{
-    background:none; border:1px solid var(--paper-shadow);
-    border-radius:3px; padding:5px 10px; cursor:pointer;
+    background:rgba(255,255,255,0.5); border:1px solid var(--paper-shadow);
+    border-radius:20px; padding:6px 13px; cursor:pointer;
     font-family:var(--mono); font-size:0.68rem; color:var(--ink-text);
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
   }
-  .qrow-actions button:hover{border-color:var(--ink-3);}
+  .qrow-actions button:hover{border-color:var(--ink-3); background:rgba(255,255,255,0.85);}
   .qrow-actions button.danger{color:var(--stamp-red-dark); border-color:var(--stamp-red);}
+  .qrow-actions button.danger:hover{background:rgba(165,52,43,0.12);}
 
   canvas#confetti{
     position:fixed; inset:0; width:100%; height:100%;
@@ -1116,6 +1175,7 @@
             <table class="roster" id="roster-table">
               <thead>
                 <tr>
+                  <th class="col-rank">#</th>
                   <th>Aluno(a)</th>
                   <th>E-mail institucional</th>
                   <th>Acertos</th>
@@ -1368,7 +1428,18 @@
     });
   }
 
+  // usado no quiz do aluno: vem da RPC get_quiz_questions, que NUNCA inclui
+  // a resposta certa (correct_index só é revelado depois de responder,
+  // via submit_answer). Isso evita que alguém veja a resposta no painel
+  // de rede do navegador antes de responder.
   function questionFromRow(row){
+    return { id: row.id, turma: row.turma, topic: row.topic, q: row.question, options: row.options, exp: row.explanation };
+  }
+
+  // usado só no painel do professor (gerenciar perguntas): vem da Edge
+  // Function "teacher" (service role, exige senha), que expõe correct_index
+  // para permitir edição.
+  function questionFromTeacherRow(row){
     return { id: row.id, turma: row.turma, topic: row.topic, q: row.question, options: row.options, correct: row.correct_index, exp: row.explanation };
   }
 
@@ -1512,13 +1583,26 @@
   els.qTotal.textContent = 0;
 
   // ---------- banco de perguntas por turma (carregado do Supabase) ----------
+  // fluxo do aluno: RPC pública get_quiz_questions (SECURITY DEFINER), que
+  // não expõe correct_index — a leitura direta da tabela é bloqueada por RLS
+  // de propósito, exatamente para isso não vazar no Network tab.
   function loadQuestionBank(turma){
     if(turma !== '4' && turma !== '6') return Promise.resolve([]);
-    return sbRest('/quiz_questions?turma=eq.' + turma + '&select=*&order=sort_order.asc').then(function(res){
-      if(!res.ok) throw new Error('rest_error');
-      return res.json();
-    }).then(function(rows){
-      return Array.isArray(rows) ? rows.map(questionFromRow) : [];
+    return sbRpc('get_quiz_questions', { p_turma: turma }).then(function(res){
+      if(!res.ok || !Array.isArray(res.data)) throw new Error('rpc_error');
+      return res.data.map(questionFromRow);
+    }).catch(function(){
+      return [];
+    });
+  }
+
+  // fluxo do professor: passa pela Edge Function "teacher" (service role,
+  // exige senha), que é a única via com permissão de ver correct_index.
+  function loadTeacherQuestionBank(turma){
+    if(turma !== '4' && turma !== '6') return Promise.resolve([]);
+    return teacherCall('list_questions', { turma: turma }).then(function(res){
+      if(!res.ok || !res.data || !Array.isArray(res.data.questions)) throw new Error('teacher_error');
+      return res.data.questions.map(questionFromTeacherRow);
     }).catch(function(){
       return [];
     });
@@ -1527,12 +1611,10 @@
   // Observação: a escrita no banco de questões (criar/editar/excluir/esvaziar)
   // é feita direto pelas funções do painel do professor via teacherCall(),
   // que exige a senha e passa pela Edge Function "teacher" (service role).
-  // saveQuestionBank fica apenas como recarregar o banco de uma turma após uma escrita.
+  // saveQuestionBank fica apenas como recarregar o banco (visão do professor)
+  // de uma turma após uma escrita.
   function saveQuestionBank(turma){
-    return loadQuestionBank(turma).then(function(list){
-      quizData = list;
-      return list;
-    });
+    return loadTeacherQuestionBank(turma);
   }
 
   // ---------- identidade do aluno (nome + e-mail institucional + turma) ----------
@@ -1673,14 +1755,38 @@
     state.answered = true;
     clearInterval(timerInterval);
     var item = quizData[state.index];
-    var correctPos = state.currentOrder.indexOf(item.correct);
+    var buttons = els.optionsBox.querySelectorAll('.option');
+    buttons.forEach(function(b){ b.disabled = true; });
+
+    // índice original (não embaralhado) da alternativa marcada, ou -1 se o
+    // tempo esgotou sem resposta.
+    var origSelected = idx >= 0 ? state.currentOrder[idx] : -1;
+
+    // a checagem acontece no servidor (RPC submit_answer, SECURITY DEFINER):
+    // ela já sabe o correct_index, valida, grava em quiz_answers e só então
+    // devolve o gabarito — o cliente nunca teve a resposta certa em mãos.
+    sbRpc('submit_answer', { p_question_id: item.id, p_turma: student.turma, p_selected_index: origSelected })
+      .then(function(res){
+        var row = (res.ok && Array.isArray(res.data)) ? res.data[0] : null;
+        if(!row){
+          resolveAnswer(idx, -999, false, item.exp);
+          showToast('Não foi possível registrar sua resposta. Verifique sua conexão.');
+          return;
+        }
+        resolveAnswer(idx, row.correct_index, !!row.is_correct, row.explanation || item.exp);
+      }).catch(function(){
+        resolveAnswer(idx, -999, false, item.exp);
+        showToast('Não foi possível registrar sua resposta. Verifique sua conexão.');
+      });
+  }
+
+  function resolveAnswer(idx, correctOrigIndex, isCorrect, explanationText){
+    var correctPos = state.currentOrder.indexOf(correctOrigIndex);
     var buttons = els.optionsBox.querySelectorAll('.option');
     buttons.forEach(function(b, i){
-      b.disabled = true;
       if(i !== idx && i !== correctPos) b.classList.add('dim');
     });
 
-    var isCorrect = idx === correctPos;
     var stamp = document.createElement('div');
     stamp.className = 'stamp ' + (isCorrect ? 'ok' : 'no');
     stamp.textContent = isCorrect ? 'Deferido' : 'Indeferido';
@@ -1693,18 +1799,9 @@
     if(idx >= 0){
       buttons[idx].classList.add(isCorrect ? 'correct' : 'wrong');
     }
-    if(!isCorrect){
+    if(!isCorrect && correctPos >= 0){
       buttons[correctPos].classList.add('correct');
       buttons[correctPos].classList.remove('dim');
-    }
-
-    // log da resposta individual (para o professor ver quais perguntas mais derrubam a turma)
-    if(item.id){
-      sbRest('/quiz_answers', {
-        method: 'POST',
-        headers: { 'Prefer': 'return=minimal' },
-        body: { question_id: item.id, turma: student.turma, is_correct: isCorrect }
-      }).catch(function(){ /* estatística é best-effort, não trava o quiz */ });
     }
 
     if(isCorrect){
@@ -1729,9 +1826,9 @@
       showScorePopup('honorários retidos', idx < 0 ? 'prazo perdido' : '', false);
     }
 
-    els.explanationText.textContent = item.exp;
+    els.explanationText.textContent = explanationText;
     els.explanation.classList.add('show');
-    els.resultAnnouncer.textContent = (isCorrect ? 'Resposta correta.' : 'Resposta incorreta.') + ' Fundamentação: ' + item.exp;
+    els.resultAnnouncer.textContent = (isCorrect ? 'Resposta correta.' : 'Resposta incorreta.') + ' Fundamentação: ' + explanationText;
     showJudgeReaction(isCorrect, idx < 0);
     renderHud();
 
@@ -2031,7 +2128,7 @@
   var activeTurma = '4';
 
   function loadAttempts(){
-    els.rosterBody.innerHTML = '<tr><td colspan="7" style="text-align:center; opacity:0.7; font-family:var(--mono); font-size:0.8rem;">Carregando...</td></tr>';
+    els.rosterBody.innerHTML = '<tr><td colspan="8" style="text-align:center; opacity:0.7; font-family:var(--mono); font-size:0.8rem;">Carregando...</td></tr>';
     els.rosterEmpty.style.display = 'none';
     teacherCall('list_attempts', { turma: activeTurma }).then(function(res){
       if(!res.ok){
@@ -2077,9 +2174,10 @@
     }
     els.rosterEmpty.style.display = 'none';
 
-    els.rosterBody.innerHTML = list.map(function(a){
+    els.rosterBody.innerHTML = list.map(function(a, i){
       var pillClass = pctPillClass(a.pct||0);
       return '<tr>' +
+        '<td class="col-rank">' + (i+1) + '</td>' +
         '<td>' + escapeHtml(a.name||'—') + '</td>' +
         '<td>' + escapeHtml(a.email||'—') + '</td>' +
         '<td class="num">' + (a.correct!=null?a.correct:'—') + '/' + (a.total!=null?a.total:'—') + '</td>' +
@@ -2184,7 +2282,7 @@
     if(currentTeacherTab === 'notas'){
       loadAttempts();
     }else if(currentTeacherTab === 'perguntas'){
-      loadQuestionBank(activeTurma).then(function(list){
+      loadTeacherQuestionBank(activeTurma).then(function(list){
         teacherQuestions = list;
         renderQuestionManager();
       });
@@ -2238,14 +2336,16 @@
         els.errorStatsList.innerHTML = '<p class="roster-empty">Ainda não há respostas registradas para esta turma.</p>';
         return;
       }
-      els.errorStatsList.innerHTML = list.map(function(q){
+      els.errorStatsList.innerHTML = list.map(function(q, i){
+        var sev = errorPillClass(q.error_rate);
         return '<div class="error-row">' +
+          '<span class="error-row-num ' + sev + '">' + (i+1) + '</span>' +
           '<div class="error-row-main">' +
             '<div class="qrow-topic">' + escapeHtml(q.topic || 'Sem matéria') + '</div>' +
             '<div class="qrow-text">' + escapeHtml(q.question) + '</div>' +
           '</div>' +
           '<div class="error-row-meta">' +
-            '<span class="pill ' + errorPillClass(q.error_rate) + '">' + q.error_rate + '% de erro</span><br>' +
+            '<span class="pill ' + sev + '">' + q.error_rate + '% de erro</span><br>' +
             q.wrong_answers + ' de ' + q.total_answers + ' respostas' +
           '</div>' +
         '</div>';
@@ -2270,15 +2370,16 @@
       els.questionList.innerHTML = '<p class="roster-empty">Nenhuma pergunta cadastrada ainda para esta turma.</p>';
       return;
     }
-    els.questionList.innerHTML = list.map(function(item){
+    els.questionList.innerHTML = list.map(function(item, i){
       return '<div class="qrow" data-id="' + escapeAttr(item.id) + '">' +
+        '<span class="qrow-num">' + (i+1) + '</span>' +
         '<div class="qrow-main">' +
           '<div class="qrow-topic">' + escapeHtml(item.topic || 'Sem matéria') + '</div>' +
           '<div class="qrow-text">' + escapeHtml(item.q) + '</div>' +
         '</div>' +
         '<div class="qrow-actions">' +
-          '<button type="button" class="q-edit-btn">Editar</button>' +
-          '<button type="button" class="q-del-btn danger">Excluir</button>' +
+          '<button type="button" class="q-edit-btn">✎ Editar</button>' +
+          '<button type="button" class="q-del-btn danger">🗑 Excluir</button>' +
         '</div>' +
       '</div>';
     }).join('');
