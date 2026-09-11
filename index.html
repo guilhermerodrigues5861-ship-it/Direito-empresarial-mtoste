@@ -430,6 +430,20 @@
   .option.wrong{border-color:var(--stamp-red); background:rgba(165,52,43,0.18);}
   .option.wrong .letter{background:var(--stamp-red);}
   .option.dim{opacity:0.5;}
+  .option.pending{border-color:var(--gold); background:rgba(199,154,61,0.16); animation:pendingPulse 0.9s ease-in-out infinite;}
+  .option.pending .letter{background:var(--gold); animation:pendingSpin 0.9s linear infinite;}
+  @keyframes pendingPulse{
+    0%, 100%{opacity:1;}
+    50%{opacity:0.65;}
+  }
+  @keyframes pendingSpin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .option.pending{animation:none;}
+    .option.pending .letter{animation:none;}
+  }
 
   .stamp-wrap{
     position:relative;
@@ -1757,6 +1771,16 @@
     var item = quizData[state.index];
     var buttons = els.optionsBox.querySelectorAll('.option');
     buttons.forEach(function(b){ b.disabled = true; });
+    // feedback imediato: a alternativa clicada já mostra que o clique foi
+    // registrado enquanto aguarda a confirmação do servidor (submit_answer
+    // precisa validar no banco antes de revelar o gabarito, por segurança).
+    if(idx >= 0) buttons[idx].classList.add('pending');
+
+    // se a rede estiver mais lenta que o normal, avisa em vez de deixar a
+    // tela parecendo travada.
+    var slowNoticeTimer = setTimeout(function(){
+      showToast('Confirmando resposta...');
+    }, 1800);
 
     // índice original (não embaralhado) da alternativa marcada, ou -1 se o
     // tempo esgotou sem resposta.
@@ -1767,6 +1791,7 @@
     // devolve o gabarito — o cliente nunca teve a resposta certa em mãos.
     sbRpc('submit_answer', { p_question_id: item.id, p_turma: student.turma, p_selected_index: origSelected })
       .then(function(res){
+        clearTimeout(slowNoticeTimer);
         var row = (res.ok && Array.isArray(res.data)) ? res.data[0] : null;
         if(!row){
           resolveAnswer(idx, -999, false, item.exp);
@@ -1775,6 +1800,7 @@
         }
         resolveAnswer(idx, row.correct_index, !!row.is_correct, row.explanation || item.exp);
       }).catch(function(){
+        clearTimeout(slowNoticeTimer);
         resolveAnswer(idx, -999, false, item.exp);
         showToast('Não foi possível registrar sua resposta. Verifique sua conexão.');
       });
@@ -1783,6 +1809,7 @@
   function resolveAnswer(idx, correctOrigIndex, isCorrect, explanationText){
     var correctPos = state.currentOrder.indexOf(correctOrigIndex);
     var buttons = els.optionsBox.querySelectorAll('.option');
+    if(idx >= 0) buttons[idx].classList.remove('pending');
     buttons.forEach(function(b, i){
       if(i !== idx && i !== correctPos) b.classList.add('dim');
     });
