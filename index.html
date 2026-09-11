@@ -20,6 +20,7 @@
     --stamp-green-dark: #1e4d34;
     --gold: #c79a3d;
     --gold-light: #e3c063;
+    --gold-ink: #7a5b13; /* variante escura do dourado, com contraste adequado sobre o papel claro */
     --ink-text: #1c1a12;
     --paper-text: #f2ecda;
     --mono: 'IBM Plex Mono', monospace;
@@ -372,7 +373,7 @@
     color:var(--ink-3); flex:none; min-width:38px; text-align:right;
     font-variant-numeric:tabular-nums;
   }
-  .timer-text.warn{color:#8a681f;}
+  .timer-text.warn{color:var(--gold-ink);}
   .timer-text.danger{color:var(--stamp-red-dark); animation:pulseDanger 1s ease-in-out infinite;}
   @keyframes pulseDanger{0%,100%{opacity:1;}50%{opacity:0.45;}}
   .timer-fill{
@@ -632,7 +633,7 @@
     width:26px; text-align:center; flex:none; color:var(--ink-3);
   }
   .rank-row.top1{background:linear-gradient(90deg, rgba(227,192,99,0.28), rgba(227,192,99,0.06));}
-  .rank-row.top1 .pos{color:#8a681f; font-size:1.1rem;}
+  .rank-row.top1 .pos{color:var(--gold-ink); font-size:1.1rem;}
   .rank-row.top2{background:rgba(0,0,0,0.07);}
   .rank-row.top3{background:rgba(165,52,43,0.08);}
   .rank-row .rname{flex:1; font-weight:600; min-width:0;}
@@ -664,7 +665,7 @@
     display:flex; align-items:center; justify-content:center;
     flex:none;
   }
-  .error-row-num.mid{background:rgba(199,154,61,0.22); color:#8a681f;}
+  .error-row-num.mid{background:rgba(199,154,61,0.22); color:var(--gold-ink);}
   .error-row-num.low{background:rgba(165,52,43,0.14); color:var(--stamp-red-dark);}
 
   /* ===== identificação (registro) ===== */
@@ -721,11 +722,11 @@
   .teacher-link button{
     background:none; border:none; cursor:pointer;
     font-family:var(--mono); font-size:0.74rem;
-    color:#8891bd; letter-spacing:0.02em;
+    color:#4a5378; letter-spacing:0.02em;
     text-decoration:underline;
     padding:4px;
   }
-  .teacher-link button:hover{color:var(--gold-light);}
+  .teacher-link button:hover{color:var(--stamp-red-dark);}
 
   /* ===== painel do professor ===== */
   .teacher-doc{max-width:920px;}
@@ -822,7 +823,7 @@
     background:rgba(44,107,73,0.15); color:var(--stamp-green-dark);
   }
   .pill.low{background:rgba(165,52,43,0.15); color:var(--stamp-red-dark);}
-  .pill.mid{background:rgba(199,154,61,0.2); color:#8a681f;}
+  .pill.mid{background:rgba(199,154,61,0.2); color:var(--gold-ink);}
 
   .tabs-row{display:flex; gap:4px; margin-top:14px; flex-wrap:wrap; background:rgba(0,0,0,0.05); padding:4px; border-radius:6px;}
   .tabs-row .tab-btn{opacity:0.6; background:transparent; box-shadow:none; color:var(--ink-text); transition:opacity .15s ease, background .15s ease;}
@@ -830,8 +831,8 @@
   .tabs-row .tab-btn.active{opacity:1; background:linear-gradient(180deg, var(--ink-3), var(--ink-2)); color:var(--paper-text); box-shadow:0 4px 10px rgba(0,0,0,0.25);}
   .btn.gold-outline{
     background:transparent;
-    border:1.5px solid var(--gold);
-    color:var(--gold-light);
+    border:1.5px solid var(--gold-ink);
+    color:var(--gold-ink);
     box-shadow:none;
   }
   .btn.gold-outline:active{transform:translateY(1px);}
@@ -1179,7 +1180,8 @@
 
         <!-- ABA NOTAS -->
         <div id="tab-notas">
-          <div class="teacher-toolbar" style="margin-top:16px;">
+          <p class="hint" id="notas-tab-hint" style="margin:16px 0 14px;">Acompanhe os resultados registrados por cada aluno(a) desta turma.</p>
+          <div class="teacher-toolbar">
             <input type="text" id="teacher-search" placeholder="Buscar por nome ou e-mail...">
             <button class="btn small" id="btn-refresh">↻ Atualizar</button>
             <button class="btn small" id="btn-export">⇩ Exportar CSV</button>
@@ -1207,12 +1209,13 @@
 
         <!-- ABA PERGUNTAS -->
         <div id="tab-perguntas" style="display:none;">
-          <div class="teacher-toolbar" style="margin-top:16px;">
+          <p class="hint" id="question-count-hint" style="margin:16px 0 14px;"></p>
+          <div class="teacher-toolbar">
             <input type="text" id="question-search" placeholder="Buscar por matéria ou texto da pergunta...">
             <button class="btn small gold-outline" id="btn-new-question">+ Nova pergunta</button>
             <button class="btn small" id="btn-reset-questions">🗑 Esvaziar banco desta turma</button>
           </div>
-          <p class="hint" id="question-count-hint" style="margin-bottom:14px;"></p>
+          <div class="teacher-stats" id="question-teacher-stats"></div>
 
           <!-- formulário (nova / edição) -->
           <div id="question-form-wrap" style="display:none;">
@@ -1251,8 +1254,11 @@
 
         <!-- ABA QUESTÕES COM MAIS ERRO -->
         <div id="tab-erros" style="display:none;">
-          <p class="hint" style="margin:16px 0 14px;">Perguntas ordenadas pela taxa de erro entre os alunos desta turma. Útil pra saber o que reforçar na próxima aula — não mostra quem errou, só o quanto a pergunta em si derruba a turma.</p>
-          <button class="btn small" id="btn-refresh-errors" style="margin-bottom:14px;">↻ Atualizar</button>
+          <p class="hint" id="erros-tab-hint" style="margin:16px 0 14px;">Perguntas ordenadas pela taxa de erro entre os alunos desta turma. Útil pra saber o que reforçar na próxima aula — não mostra quem errou, só o quanto a pergunta em si derruba a turma.</p>
+          <div class="teacher-toolbar">
+            <button class="btn small" id="btn-refresh-errors" type="button">↻ Atualizar</button>
+          </div>
+          <div class="teacher-stats" id="error-teacher-stats"></div>
           <div id="error-stats-list"></div>
         </div>
       </div>
@@ -1574,6 +1580,8 @@
     tabPerguntas: document.getElementById('tab-perguntas'),
     tabErros: document.getElementById('tab-erros'),
     errorStatsList: document.getElementById('error-stats-list'),
+    errorTeacherStats: document.getElementById('error-teacher-stats'),
+    questionTeacherStats: document.getElementById('question-teacher-stats'),
     btnRefreshErrors: document.getElementById('btn-refresh-errors'),
     turmaBtn4: document.getElementById('turma-btn-4'),
     turmaBtn6: document.getElementById('turma-btn-6'),
@@ -2353,12 +2361,23 @@
 
   function loadQuestionErrorStats(){
     els.errorStatsList.innerHTML = '<p class="roster-empty">Carregando estatísticas...</p>';
+    els.errorTeacherStats.innerHTML = '';
     sbRpc('get_question_stats', { p_turma: activeTurma }).then(function(res){
       if(!res.ok || !Array.isArray(res.data)){
         els.errorStatsList.innerHTML = '<p class="roster-empty">Não foi possível carregar. Confirme se a função get_question_stats já foi criada no banco.</p>';
         return;
       }
       var list = res.data.filter(function(q){ return q.total_answers > 0; });
+
+      var totalAnswered = res.data.reduce(function(s,q){ return s + (q.total_answers||0); }, 0);
+      var avgErrorRate = list.length ? Math.round(list.reduce(function(s,q){ return s + (q.error_rate||0); }, 0) / list.length) : 0;
+      var worst = list.length ? list.reduce(function(a,b){ return (b.error_rate||0) > (a.error_rate||0) ? b : a; }) : null;
+      els.errorTeacherStats.innerHTML =
+        '<div><span class="ic">❗</span><span class="num">' + list.length + '</span><span class="lbl">perguntas avaliadas</span></div>' +
+        '<div><span class="ic">👥</span><span class="num">' + totalAnswered + '</span><span class="lbl">respostas registradas</span></div>' +
+        '<div><span class="ic">📉</span><span class="num">' + avgErrorRate + '%</span><span class="lbl">taxa de erro média</span></div>' +
+        '<div><span class="ic">🔥</span><span class="num">' + (worst ? worst.error_rate + '%' : '—') + '</span><span class="lbl">maior taxa de erro</span></div>';
+
       if(list.length === 0){
         els.errorStatsList.innerHTML = '<p class="roster-empty">Ainda não há respostas registradas para esta turma.</p>';
         return;
@@ -2392,6 +2411,12 @@
     });
     var turmaLabel = activeTurma === '4' ? '4° período' : '6° período';
     els.questionCountHint.textContent = teacherQuestions.length + ' pergunta(s) no banco da turma ' + turmaLabel + (q ? (' — ' + list.length + ' encontrada(s)') : '') + '.';
+
+    var topics = {};
+    teacherQuestions.forEach(function(item){ if(item.topic) topics[item.topic] = true; });
+    els.questionTeacherStats.innerHTML =
+      '<div><span class="ic">📝</span><span class="num">' + teacherQuestions.length + '</span><span class="lbl">perguntas no banco</span></div>' +
+      '<div><span class="ic">🏷️</span><span class="num">' + Object.keys(topics).length + '</span><span class="lbl">matérias distintas</span></div>';
 
     if(list.length === 0){
       els.questionList.innerHTML = '<p class="roster-empty">Nenhuma pergunta cadastrada ainda para esta turma.</p>';
